@@ -1,5 +1,5 @@
 <h1 align="center" style="color:#F26522;">
-  Análisis Exploratorio de Datos (EDA) aplicado al Sector Hotelero en España
+  Análisis Exploratorio de Datos (EDA) aplicado al Sector Turístico en España
 </h1>
 
 <h3 align="center" style="color:#003A46;">
