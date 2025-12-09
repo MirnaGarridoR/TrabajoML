@@ -176,7 +176,7 @@ Criterio Propio Aplicado: :Para distinguir entre "pico real" y "error", no utili
 - Construcción del target binario  
 - Exportación del dataset final para modelado  
 
-#  8. Conclusiones  y acciones derivadas (primera parte)          ********+
+#  8. Conclusiones  y acciones derivadas (primera parte)
 
 Entre las conclusiones destacadas para el Gobierno:
 
