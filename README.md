@@ -1,8 +1,4 @@
 <h1 align="center" style="color:#F26522;">
-  Análisis Exploratorio de Datos (EDA) aplicado al Sector Turístico en España
-
-
-<h1 align="center" style="color:#F26522;">
   Análisis Exploratorio de Datos (EDA) aplicado al Sector Hotelero en España
 </h1>
 
@@ -13,7 +9,7 @@
 
 ---
 
-# 1. Integrantes del equipo
+## 1. Integrantes del equipo
 
 | Apellidos | Nombre |
 |----------|--------|
@@ -23,7 +19,7 @@
 
 ---
 
-# 2. Introducción
+## 2. Introducción
 
 El turismo es uno de los motores fundamentales de la economía española y un eje estratégico en la competitividad del país. Dentro del sector, las **pernoctaciones hoteleras** constituyen uno de los indicadores más relevantes para medir la demanda turística y planificar decisiones tanto del sector público como del privado.
 
@@ -33,9 +29,9 @@ Este proyecto corresponde a la **Primera Entrega de la Evaluación Continua** de
 
 ---
 
-# 3. Problema de Negocio
+## 3. Problema de Negocio
 
-##  Contexto empresarial
+###  Contexto empresarial
 
 
 El Ministerio de Industria y Turismo, así como varias Consejerías de Turismo de las Comunidades Autónomas, han manifestado la necesidad de **disponer de un análisis cuantitativo actualizado y riguroso** sobre el comportamiento de la demanda hotelera en España.
@@ -73,7 +69,7 @@ El objetivo empresarial es disponer de un análisis sólido que permita:
 
 ---
 
-# 4. Origen y descripción del dataset
+## 4. Origen y descripción del dataset
 
 El dataset **`per.csv`** proviene de la **Encuesta de Ocupación en Establecimientos Hoteleros (EOH)** del **Instituto Nacional de Estadística (INE)**.  
 La tabla original fue exportada y transformada a CSV manteniendo la estructura y los campos relevantes.
@@ -96,7 +92,7 @@ Este dataset permite estudiar el comportamiento de la demanda turística por reg
 
 ---
 
-# 5. Justificación del dataset
+## 5. Justificación del dataset
 
 Elegimos trabajar con este dataset porque:
 
@@ -116,7 +112,7 @@ Este dataset también permite obtener insights muy relevantes para:
 
 ---
 
-#  6. Planteamiento científico (Aprendizaje Automático)
+##  6. Planteamiento científico (Aprendizaje Automático)
 
 Con el objetivo de que este trabajo sea escalable hacia un sistema predictivo, el estudio se formula bajo los principios del **Aprendizaje Automático**.
 
@@ -144,7 +140,7 @@ Las variables categóricas se gestionan según el modelo:
 
 ---
 
-#  7. Metodología del EDA (Primera Entrega) y correcciones aplicadas
+##  7. Metodología del EDA (Primera Entrega) y correcciones aplicadas
 
 La primera fase del proyecto se centró en comprender los datos, validar su consistencia y extraer conclusiones accionables.
 
@@ -185,19 +181,15 @@ Resultados principales (resumen):
 - fuerte heterogeneidad territorial entre provincias y comunidades,
 - diferencias sistemáticas en perfiles temporales que requieren políticas adaptadas.
 
-#  8. Conclusiones  y acciones derivadas (primera parte)
-#  8. Conclusiones  y acciones derivadas (primera parte)          ********+
-
 Acciones derivadas:
 - necesidad de sistemas predictivos para anticipar picos de demanda,
 - recomendación de monitorización mensual y por provincia,
 - preparación de dataset para modelado (features temporales y territoriales).
 
- 
 Entre las conclusiones destacadas para el Gobierno:
 
-- Existe **alta concentración de demanda** en ciertos meses, lo que requiere planificación reforzada.  
-- Las comunidades presentan **perfiles turísticos muy diferenciados**, lo que sugiere políticas adaptadas.  
+- Existe alta concentración de demanda en ciertos meses, lo que requiere planificación reforzada.  
+- Las comunidades presentan perfiles turísticos muy diferenciados, lo que sugiere políticas adaptadas.  
 - Los picos detectados deben ser considerados para reforzar:
   - transporte público,  
   - personal sanitario,  
