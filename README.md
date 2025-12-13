@@ -1,5 +1,9 @@
 <h1 align="center" style="color:#F26522;">
   Análisis Exploratorio de Datos (EDA) aplicado al Sector Turístico en España
+
+
+<h1 align="center" style="color:#F26522;">
+  Análisis Exploratorio de Datos (EDA) aplicado al Sector Hotelero en España
 </h1>
 
 <h3 align="center" style="color:#003A46;">
@@ -91,6 +95,7 @@ La tabla original fue exportada y transformada a CSV manteniendo la estructura y
 Este dataset permite estudiar el comportamiento de la demanda turística por región, por residencia y por temporalidad
 
 ---
+
 # 5. Justificación del dataset
 
 Elegimos trabajar con este dataset porque:
@@ -110,6 +115,7 @@ Este dataset también permite obtener insights muy relevantes para:
 - consultoras,
 
 ---
+
 #  6. Planteamiento científico (Aprendizaje Automático)
 
 Con el objetivo de que este trabajo sea escalable hacia un sistema predictivo, el estudio se formula bajo los principios del **Aprendizaje Automático**.
@@ -177,6 +183,7 @@ Criterio Propio Aplicado: :Para distinguir entre "pico real" y "error", no utili
 - Exportación del dataset final para modelado  
 
 #  8. Conclusiones  y acciones derivadas (primera parte)
+#  8. Conclusiones  y acciones derivadas (primera parte)          ********+
 
 Entre las conclusiones destacadas para el Gobierno:
 
