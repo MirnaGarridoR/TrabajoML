@@ -1,3 +1,5 @@
+<h1 align="center" style="color:#F26522;">
+  Análisis Exploratorio de Datos (EDA) aplicado al Sector Turístico en España
 
 
 <h1 align="center" style="color:#F26522;">
@@ -183,6 +185,8 @@ Resultados principales (resumen):
 - fuerte heterogeneidad territorial entre provincias y comunidades,
 - diferencias sistemáticas en perfiles temporales que requieren políticas adaptadas.
 
+#  8. Conclusiones  y acciones derivadas (primera parte)
+#  8. Conclusiones  y acciones derivadas (primera parte)          ********+
 
 Acciones derivadas:
 - necesidad de sistemas predictivos para anticipar picos de demanda,
@@ -286,3 +290,14 @@ A lo largo del proyecto se tomaron varias decisiones técnicas relevantes, aline
 Aunque el modelo desarrollado ofrece resultados satisfactorios, presenta algunas limitaciones. En primer lugar, el enfoque se basa exclusivamente en datos históricos del propio sector hotelero, sin incorporar variables externas como climatología, eventos especiales o indicadores macroeconómicos. Además, el modelo no es un modelo temporal puro, por lo que no captura explícitamente dependencias secuenciales de largo plazo.
 Como líneas de trabajo futuro, se propone la incorporación de variables exógenas, la exploración de modelos específicos de series temporales o redes neuronales, y la ampliación del sistema hacia un entorno de predicción continua que permita generar alertas tempranas para la planificación turística.
 
+El trabajo desarrollado establece un marco sólido para ello y permitirá avanzar hacia políticas públicas basadas en evidencia cuantitativa.
+
+
+
+
+---
+
+# CUNEF Universidad  
+Proyecto académico realizado por:  
+**Sánchez, Joan — Garrido, Mirna — Baquera, Mario**  
+Asignatura: *Aprendizaje Automático*
