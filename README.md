@@ -209,38 +209,34 @@ Se recomienda la implementación futura de modelos predictivos para:
 
 
 ## 8. Metodología de modelado (entrega final)
-La segunda fase del proyecto convierte el análisis exploratorio en un pipeline de modelado reproducible.
 
 ### 8.1 Separación del dataset y validación
 Dado que los datos tienen estructura temporal, se evita cualquier aleatorización que mezcle pasado y futuro. Se emplea:
 - separación train/test respetando el orden temporal,
 - validación cruzada temporal mediante TimeSeriesSplit para comparar modelos y seleccionar hiperparámetros.
 
-
-Este enfoque evita data leakage y ofrece una evaluación más realista.
 ### 8.2 Ingeniería y selección de variables (feature engineering)
 En la fase de ingeniería de variables se realizaron transformaciones acordes a lo visto en clase y a la naturaleza del problema:
 - transformaciones logarítmicas y ratios para estabilizar escalas,
 - creación de variables temporales derivadas,
 - selección de variables basada en coherencia con el problema y rendimiento en validación.
 
-El resultado se guarda y utiliza como entrada homogénea para los modelos.
-
 
 ### 8.3 Modelo base y modelos candidatos
 Se entrenó un modelo base y modelos candidatos:
-- Modelo base: Naive, como referencia mínima razonable.
-- Modelos candidatos: CatBoost Regressor y XGBoost Regressor (familia boosting de árboles).
+- Modelo base: Naive, como referencia mínima razonable
+- Modelos candidatos: CatBoost Regressor y XGBoost Regressor
 
-La comparación se realiza siempre con el mismo esquema de validación temporal y mismas métricas.
+(La comparación se realiza siempre con el mismo esquema de validación temporal y mismas métricas)
+
 ### 8.4 Métricas de evaluación y justificación
 Se utilizaron:
-- MAE: mide el error medio absoluto (interpretación directa).
+- MAE: mide el error medio absoluto 
 - RMSE: penaliza más los errores grandes, relevante en planificación turística donde grandes desviaciones son críticas.
 Para la selección del modelo se prioriza RMSE, usando MAE como métrica complementaria.
 
 ### 8.5 Selección de hiperparámetros
-La selección de hiperparámetros se realizó con búsqueda en rejilla/listas de parámetros sobre validación temporal.
+La selección de hiperparámetros se realizó con búsqueda en listas de parámetros sobre validación temporal.
 Se eligió este enfoque por ser transparente, reproducible y apropiado dado el tamaño del espacio de búsqueda y los recursos disponibles.
 
 ### 8.6 Comparación de resultados
