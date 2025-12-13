@@ -119,36 +119,38 @@ Este dataset también permite obtener insights muy relevantes para:
 Con el objetivo de que este trabajo sea escalable hacia un sistema predictivo, el estudio se formula bajo los principios del **Aprendizaje Automático**.
 
 
-## A) Modelo de regresión supervisada  
-**Objetivo:** Predecir el número de pernoctaciones mensuales por comunidad.
+Se formula un problema de aprendizaje supervisado de regresión.
+### 6.1 Target
+En la fase de modelado se trabaja con un target transformado para estabilizar varianza y facilitar el aprendizaje:
+- target: log_ratio (transformación logarítmica del ratio definido en el notebook de feature engineering).
 
-**Variables objetivo (target):**
-- `Total` (filtrado a pernoctaciones totales)
+La elección de un target transformado se justifica por:
+- presencia de asimetría y heterocedasticidad en variables de demanda,
+- mejora de estabilidad en el entrenamiento,
+- reducción de sensibilidad a valores extremos reales.
 
-**Variables explicativas:**
-- comunidad autónoma  
-- mes, año  
-- residencia  
-- tipo de indicador  
-- lags temporales (t-1, t-12) en la segunda parte del proyecto  
+### 6.2 Vector de atributos (X)
+Variables explicativas usadas en el modelado final:
+- variables temporales (Año, Mes, y/o codificaciones derivadas),
+- variables territoriales (Provincias),
+- y otras variables derivadas construidas durante feature engineering (ratios, transformaciones y/o agregaciones).
+
+Las variables categóricas se gestionan según el modelo:
+- CatBoost: tratamiento nativo de categóricas,
+- XGBoost: codificación One-Hot (cuando se compara).
+
 
 ---
 
-##  B) Modelo de clasificación binaria (Bernoulli)  
-**Objetivo:** Determinar si un mes será de *alta demanda* (`1`) o *baja demanda* (`0`) según el nivel de pernoctaciones.
+#  7. Metodología del EDA (Primera Entrega) y correcciones aplicadas
 
-Este enfoque será clave en la **segunda entrega**, donde aplicaremos **redes neuronales**.
-
----
-
-#  7. Metodología del EDA (Primera Entrega)
-
-En el notebook se desarrolla:
+La primera fase del proyecto se centró en comprender los datos, validar su consistencia y extraer conclusiones accionables.
 
 ### 7.1 Análisis preliminar
-- Inspección del dataset  
-- Tipos de datos  
-- Detección de nulos, inconsistencias y duplicados  
+- revisión de tipos, duplicados y consistencia por columnas,
+- verificación de nulos y valores inconsistentes,
+- análisis temporal para confirmar periodicidad mensual.
+  
 
 ### 7.2 Limpieza y preprocesado
 Para garantizar la calidad del análisis, se realizaron las siguientes intervenciones críticas en los datos:
@@ -174,14 +176,20 @@ Criterio Propio Aplicado: :Para distinguir entre "pico real" y "error", no utili
 - Comparación entre CCAA  
 - Diferencias entre residentes vs no residentes  
 
-### 7.5 Preparación para modelos (segunda entrega)
-- Generación de nuevas features  
-- Codificación temporal (sin/cos)  
-- Construcción del target binario  
-- Exportación del dataset final para modelado  
+### 7.5 Conclusiones del EDA y acciones
 
-#  8. Conclusiones  y acciones derivadas (primera parte)          ********+
+Resultados principales (resumen):
+- estacionalidad marcada y concentraciones mensuales en periodos concretos,
+- fuerte heterogeneidad territorial entre provincias y comunidades,
+- diferencias sistemáticas en perfiles temporales que requieren políticas adaptadas.
 
+
+Acciones derivadas:
+- necesidad de sistemas predictivos para anticipar picos de demanda,
+- recomendación de monitorización mensual y por provincia,
+- preparación de dataset para modelado (features temporales y territoriales).
+
+ 
 Entre las conclusiones destacadas para el Gobierno:
 
 - Existe **alta concentración de demanda** en ciertos meses, lo que requiere planificación reforzada.  
@@ -199,13 +207,86 @@ Se recomienda la implementación futura de modelos predictivos para:
 - optimizar campañas públicas,  
 - mejorar el seguimiento de indicadores clave.
 
-## 9. Cierre y próximos pasos
 
-El presente informe constituye la primera entrega solicitada.  
-El siguiente paso es aplicar **modelos de aprendizaje automático** que permitan al Gobierno:
+## 8. Metodología de modelado (entrega final)
+La segunda fase del proyecto convierte el análisis exploratorio en un pipeline de modelado reproducible.
 
-- predecir demanda hotelera mensual en cada provinncia,  
-- detectar riesgos de saturación,  
-- mejorar planificación e inversión turística.  
+### 8.1 Separación del dataset y validación
+Dado que los datos tienen estructura temporal, se evita cualquier aleatorización que mezcle pasado y futuro. Se emplea:
+- separación train/test respetando el orden temporal,
+- validación cruzada temporal mediante TimeSeriesSplit para comparar modelos y seleccionar hiperparámetros.
 
-El trabajo desarrollado establece un marco sólido para ello y permitirá avanzar hacia políticas públicas basadas en evidencia cuantitativa.
+
+Este enfoque evita data leakage y ofrece una evaluación más realista.
+### 8.2 Ingeniería y selección de variables (feature engineering)
+En la fase de ingeniería de variables se realizaron transformaciones acordes a lo visto en clase y a la naturaleza del problema:
+- transformaciones logarítmicas y ratios para estabilizar escalas,
+- creación de variables temporales derivadas,
+- selección de variables basada en coherencia con el problema y rendimiento en validación.
+
+El resultado se guarda y utiliza como entrada homogénea para los modelos.
+
+
+### 8.3 Modelo base y modelos candidatos
+Se entrenó un modelo base y modelos candidatos:
+- Modelo base: Naive, como referencia mínima razonable.
+- Modelos candidatos: CatBoost Regressor y XGBoost Regressor (familia boosting de árboles).
+
+La comparación se realiza siempre con el mismo esquema de validación temporal y mismas métricas.
+### 8.4 Métricas de evaluación y justificación
+Se utilizaron:
+- MAE: mide el error medio absoluto (interpretación directa).
+- RMSE: penaliza más los errores grandes, relevante en planificación turística donde grandes desviaciones son críticas.
+Para la selección del modelo se prioriza RMSE, usando MAE como métrica complementaria.
+
+### 8.5 Selección de hiperparámetros
+La selección de hiperparámetros se realizó con búsqueda en rejilla/listas de parámetros sobre validación temporal.
+Se eligió este enfoque por ser transparente, reproducible y apropiado dado el tamaño del espacio de búsqueda y los recursos disponibles.
+
+### 8.6 Comparación de resultados
+
+| Modelo   |    MAE |   RMSE |
+| -------- | -----: | -----: |
+| Naive    | 0.1660 | 0.2210 |
+| XGBoost  | 0.1184 | 0.1598 |
+| CatBoost | 0.1173 | 0.1575 |
+
+CatBoost obtiene el mejor rendimiento en ambas métricas y además permite tratar variables categóricas de forma nativa, simplificando el pipeline.
+
+
+### 8.7 Justificación de no incluir más modelos
+
+En el temario se revisaron otros algoritmos (regresión lineal, Random Forest, Gradient Boosting clásico). Se consideraron, pero no se entrenaron por dos motivos:
+- en datos tabulares con no linealidades, los métodos de boosting modernos suelen dominar a alternativas clásicas en rendimiento,
+- en un contexto temporal, modelos como Random Forest o regresión lineal aportarían menos valor comparativo, y el objetivo era comparar modelos representativos y relevantes sin redundancia.
+
+La elección de CatBoost y XGBoost cubre adecuadamente la familia de métodos más competitiva para este tipo de dataset y permite una comparación sólida.
+
+
+### 8.8 Entrenamiento final y evaluación
+Una vez seleccionado el modelo final (CatBoost), se reentrena con la configuración elegida sobre los datos de entrenamiento definidos y se evalúa sobre el conjunto de test reservado, manteniendo la separación temporal.
+
+
+
+
+
+## 9. Conclusiones fiales
+
+
+
+
+
+
+## 10. Decisiones técnicas clave
+
+A lo largo del proyecto se tomaron varias decisiones técnicas relevantes, alineadas con los contenidos vistos en la asignatura y con la naturaleza del problema:
+- Respeto de la estructura temporal de los datos: la separación del dataset y la validación se realizaron sin mezclar pasado y futuro, utilizando esquemas de validación temporal para evitar data leakage y obtener una evaluación realista.
+- Uso de un target transformado: se optó por trabajar con una transformación logarítmica de ratios (log_ratio) para estabilizar la varianza, reducir asimetrías y mejorar el comportamiento de los modelos de regresión.
+- Selección de modelos de boosting avanzados: se priorizaron CatBoost y XGBoost frente a algoritmos más simples, al ser métodos especialmente adecuados para datos tabulares con relaciones no lineales y heterogeneidad territorial.
+- Tratamiento diferenciado de outliers: se distinguieron valores atípicos reales de errores de registro mediante un enfoque contextual, evitando eliminar picos estacionales que contienen información relevante para el problema de negocio.
+
+## 11. Limitaciones y trabajo futuro
+
+Aunque el modelo desarrollado ofrece resultados satisfactorios, presenta algunas limitaciones. En primer lugar, el enfoque se basa exclusivamente en datos históricos del propio sector hotelero, sin incorporar variables externas como climatología, eventos especiales o indicadores macroeconómicos. Además, el modelo no es un modelo temporal puro, por lo que no captura explícitamente dependencias secuenciales de largo plazo.
+Como líneas de trabajo futuro, se propone la incorporación de variables exógenas, la exploración de modelos específicos de series temporales o redes neuronales, y la ampliación del sistema hacia un entorno de predicción continua que permita generar alertas tempranas para la planificación turística.
+
