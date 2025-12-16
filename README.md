@@ -219,11 +219,16 @@ En la fase de ingeniería de variables se realizaron transformaciones acordes a 
 
 
 ### 8.3 Modelo base y modelos candidatos
-Se entrenó un modelo base y modelos candidatos:
-- Modelo base: Naive, como referencia mínima razonable
-- Modelos candidatos: CatBoost Regressor y XGBoost Regressor
+Con el objetivo de abordar el problema de predicción del número de turistas desde una perspectiva de aprendizaje automático, se definió en primer lugar un modelo base Naive, utilizado como referencia mínima para evaluar la capacidad predictiva de los modelos más complejos.
 
-(La comparación se realiza siempre con el mismo esquema de validación temporal y mismas métricas)
+A partir de este modelo base, se seleccionaron varios algoritmos candidatos ampliamente utilizados en problemas de regresión con datos tabulares, con el fin de comparar su rendimiento bajo un mismo marco de evaluación. Los modelos considerados fueron:
+
+- Naive, como modelo de referencia.
+- CatBoost, modelo basado en árboles de decisión y gradient boosting.
+- XGBoost, otro modelo de boosting ampliamente utilizado.
+- Random Forest, modelo basado en un conjunto de árboles de decisión entrenados mediante bagging.
+
+La inclusión de varios modelos permite contrastar distintos enfoques de aprendizaje y asegurar que la elección final no dependa de un único algoritmo, sino de una evaluación empírica sobre los datos disponibles.
 
 ### 8.4 Métricas de evaluación y justificación
 Se utilizaron:
@@ -232,57 +237,57 @@ Se utilizaron:
 Para la selección del modelo se prioriza RMSE, usando MAE como métrica complementaria.
 
 ### 8.5 Selección de hiperparámetros
-La selección de hiperparámetros se realizó con búsqueda en listas de parámetros sobre validación temporal.
-Se eligió este enfoque por ser transparente, reproducible y apropiado dado el tamaño del espacio de búsqueda y los recursos disponibles.
+Para la selección de los hiperparámetros de los modelos candidatos se utilizó un proceso de búsqueda sistemática mediante grid search, evaluando distintas combinaciones de parámetros con el objetivo de controlar la complejidad y mejorar el rendimiento de cada modelo.
+Los hiperparámetros evaluados se adaptaron a las características específicas de cada algoritmo, incluyendo parámetros relacionados con la profundidad de los árboles, la regularización, el número de iteraciones o árboles, y el número de variables consideradas en cada división, entre otros.
+Cada combinación de hiperparámetros se evaluó mediante validación cruzada temporal, calculando las métricas MAE y RMSE en cada partición. Este enfoque permite respetar la estructura temporal de los datos y proporciona una estimación más realista del comportamiento de los modelos en escenarios de predicción futura.
 
 ### 8.6 Comparación de resultados
 
-| Modelo   |    MAE |   RMSE |
-| -------- | -----: | -----: |
-| Naive    | 0.1660 | 0.2210 |
-| XGBoost  | 0.1184 | 0.1598 |
-| CatBoost | 0.1173 | 0.1575 |
+| Modelo               |    MAE |   RMSE |
+| -------------------- | -----: | -----: |
+| Naive                | 0.1660 | 0.2210 |
+| XGBoost              | 0.1173 | 0.1585 |
+| CatBoost             | 0.1173 | 0.1575 |
+| Random Forest (CV)   | 0.1130 | 0.1535 |
 
-CatBoost obtiene el mejor rendimiento en ambas métricas y además permite tratar variables categóricas de forma nativa, simplificando el pipeline.
-
-
-### 8.7 Justificación de no incluir más modelos
-
-En el temario se revisaron otros algoritmos (regresión lineal, Random Forest, Gradient Boosting clásico). Se consideraron, pero no se entrenaron por dos motivos:
-- en datos tabulares con no linealidades, los métodos de boosting modernos suelen dominar a alternativas clásicas en rendimiento,
-- en un contexto temporal, modelos como Random Forest o regresión lineal aportarían menos valor comparativo, y el objetivo era comparar modelos representativos y relevantes sin redundancia.
-
-La elección de CatBoost y XGBoost cubre adecuadamente la familia de métodos más competitiva para este tipo de dataset y permite una comparación sólida.
+Una vez seleccionados los hiperparámetros óptimos, el modelo Random Forest se entrenó de forma definitiva utilizando los datos históricos disponibles hasta el año 2024 y se evaluó sobre el conjunto de test correspondiente al año 2025.
+La evaluación se realizó empleando las métricas MAE y RMSE, así como una métrica adicional de precisión relativa basada en el error porcentual medio. Estas métricas permitieron valorar el rendimiento del modelo tanto en términos absolutos como relativos.
+Los resultados obtenidos mostraron que el modelo Random Forest supera claramente al modelo Naive y presenta un rendimiento competitivo frente al resto de modelos candidatos, destacando especialmente por la reducción del error absoluto en la predicción del número de turistas.
 
 
-### 8.8 Entrenamiento final y evaluación
-Una vez seleccionado el modelo final (CatBoost), se reentrena con la configuración elegida sobre los datos de entrenamiento definidos y se evalúa sobre el conjunto de test reservado, manteniendo la separación temporal.
+### 8.7 Entrenamiento final y evaluación
+Los resultados obtenidos en la fase de validación y evaluación muestran que el modelo Random Forest presenta el mejor rendimiento global en términos de MAE y RMSE, superando al modelo Naive y obteniendo resultados ligeramente mejores que los modelos basados en boosting (CatBoost y XGBoost).
+
+Aunque inicialmente se esperaba que los modelos de gradient boosting ofrecieran un mejor comportamiento, especialmente en datos tabulares con variables categóricas, los resultados empíricos indican que Random Forest se adapta de forma especialmente eficaz a la estructura concreta del dataset utilizado. La combinación de variables temporales, retardos (lags) y variables derivadas proporciona al modelo información suficiente para capturar la dinámica del turismo sin necesidad de un enfoque secuencial más complejo. Por otro lado, CatBoost mantiene una ligera ventaja en términos de precisión relativa, si bien esta métrica puede verse influida por provincias con menor volumen de turistas.  
+Al tener estas dudas optamos por realizar la evaluación final sobre test tanto con el catboost y con el Randomforest, y dado que el objetivo principal del trabajo es minimizar errores absolutos en la predicción del número de turistas, se priorizan las métricas MAE y RMSE como criterios de decisión.
+En base a estos resultados, se decidió seleccionar el modelo Random Forest como modelo definitivo para la resolución del problema planteado, al ofrecer el mejor equilibrio entre precisión, estabilidad y capacidad de generalización temporal.
+
+### 8.8. Predicción final y resultados obtenidos
+
+Una vez seleccionado el modelo Random Forest como modelo final, se procedió a realizar la predicción del número de turistas para el verano de 2026, considerando los meses de junio, julio y agosto.
+
+La predicción se llevó a cabo utilizando un enfoque autoregresivo, debido a la ausencia de valores reales de turistas en los meses previos del año 2026. En este procedimiento, la predicción obtenida para cada mes se utiliza como referencia para calcular las variables necesarias del mes siguiente, reproduciendo un escenario realista de predicción futura.
+
+El modelo proporciona predicciones mensuales por provincia, que posteriormente se agregan para obtener una estimación del total de turistas del trimestre de verano. Los resultadosse pueden ver aqui:
+### Predicción final – Verano 2026 (Random Forest)
+
+![Predicción verano 2026 Gráfico - Random Forest](graficos/grafico_random_forest_2026.png)
+
+Tabla completa de resultados:  
+[Descargar tabla en Excel](graficos/tabla_random_forest_2026.xlsx)
+
+Las predicciones obtenidas permiten identificar las provincias con mayor volumen esperado de turistas en el verano de 2026, ofreciendo una herramienta útil para la planificación y toma de decisiones en el ámbito del turismo.
+
+## 9. Conclusiones finales
+
+Los resultados obtenidos muestran que el modelo Random Forest proporciona predicciones consistentes y precisas del número de turistas por provincia, mejorando de forma clara al modelo Naive y ofreciendo el mejor rendimiento global en términos de MAE y RMSE entre los modelos evaluados. Esta reducción del error absoluto es especialmente relevante en provincias con mayor volumen de turistas, donde pequeñas mejoras porcentuales suponen diferencias significativas en valores reales.
+
+La predicción final del verano de 2026, realizada mediante un enfoque autoregresivo, permite estimar de forma realista la evolución mensual del turismo y obtener una estimación agregada del trimestre estival por provincia. Los resultados obtenidos muestran patrones coherentes con el comportamiento histórico del turismo, identificando las provincias con mayor concentración de visitantes y reforzando la plausibilidad de las predicciones.
+
+En conjunto, el modelo seleccionado ofrece una base sólida para la estimación anticipada del turismo estival, proporcionando información útil para la planificación y la toma de decisiones en el ámbito turístico.
 
 
 
-
-
-## 9. Conclusiones fiales
-
-
-
-
-
-
-## 10. Decisiones técnicas clave
-
-A lo largo del proyecto se tomaron varias decisiones técnicas relevantes, alineadas con los contenidos vistos en la asignatura y con la naturaleza del problema:
-- Respeto de la estructura temporal de los datos: la separación del dataset y la validación se realizaron sin mezclar pasado y futuro, utilizando esquemas de validación temporal para evitar data leakage y obtener una evaluación realista.
-- Uso de un target transformado: se optó por trabajar con una transformación logarítmica de ratios (log_ratio) para estabilizar la varianza, reducir asimetrías y mejorar el comportamiento de los modelos de regresión.
-- Selección de modelos de boosting avanzados: se priorizaron CatBoost y XGBoost frente a algoritmos más simples, al ser métodos especialmente adecuados para datos tabulares con relaciones no lineales y heterogeneidad territorial.
-- Tratamiento diferenciado de outliers: se distinguieron valores atípicos reales de errores de registro mediante un enfoque contextual, evitando eliminar picos estacionales que contienen información relevante para el problema de negocio.
-
-## 11. Limitaciones y trabajo futuro
-
-Aunque el modelo desarrollado ofrece resultados satisfactorios, presenta algunas limitaciones. En primer lugar, el enfoque se basa exclusivamente en datos históricos del propio sector hotelero, sin incorporar variables externas como climatología, eventos especiales o indicadores macroeconómicos. Además, el modelo no es un modelo temporal puro, por lo que no captura explícitamente dependencias secuenciales de largo plazo.
-Como líneas de trabajo futuro, se propone la incorporación de variables exógenas, la exploración de modelos específicos de series temporales o redes neuronales, y la ampliación del sistema hacia un entorno de predicción continua que permita generar alertas tempranas para la planificación turística.
-
-El trabajo desarrollado establece un marco sólido para ello y permitirá avanzar hacia políticas públicas basadas en evidencia cuantitativa.
 
 
 
