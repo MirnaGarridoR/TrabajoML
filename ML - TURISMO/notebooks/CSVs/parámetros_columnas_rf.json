@@ -1,0 +1,23 @@
+{
+    "modelo": "random_forest",
+    "mejores_parametros": {
+        "n_estimators": 300,
+        "max_depth": 20,
+        "min_samples_leaf": 1,
+        "max_features": 0.5
+    },
+    "x_columnas": [
+        "Provincias",
+        "A\u00f1o",
+        "Mes",
+        "log_lag_estacional",
+        "log_lag_1",
+        "log_lag_2",
+        "log_lag_3",
+        "log_lag_4",
+        "media_lag_2",
+        "media_lag_3",
+        "tendencia_corta"
+    ],
+    "y_columnas": "log_ratio"
+}
