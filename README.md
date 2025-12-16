@@ -53,7 +53,7 @@ Por ello, el Gobierno solicita un **Análisis Exploratorio de Datos (EDA)** exha
 
 
 ##  Problema identificado : 
-> **Predecir el número de turistas del próximo verano para para cada provincia** 
+> **Estimar el número de turistas por provincias del próximo verano 2026 para planificar con antelación los recursos necesarios para su acogida.** 
 
 
 El equipo de análisis ha sido encargado de:
@@ -153,10 +153,9 @@ La primera fase del proyecto se centró en comprender los datos, validar su cons
 ### 7.2 Limpieza y preprocesado
 Para garantizar la calidad del análisis, se realizaron las siguientes intervenciones críticas en los datos:
 
-- Tratamiento de "Total Nacional": Se identificó que el dataset original incluía filas agregadas bajo el concepto "Total Nacional". Tras entender mejor el dataset identificamos filas que correspondían al total nacional mensual, es decir, al conjunto de todas las provincias juntas, otras filas que se correspondían al total por comunidades agrupadas, y por ultimo el resto de filas siendo lo mayoritario del dataset que eran el total por cada provincia. Por esto, decidimos establecer Las columas de la siguiente manera:
-      - En la columna Total Nacional se establece un booleano en el cual el 1 representa las filas sobre el total nacional mensual.
-      - En la columna Comunidad_ciudad_autonoma decidimos establecer los valores de cada comunidad o ciudad autonoma, pero también añadir el valor "no aplica" cuando se estaría refiriendo al primer caso (total nacional mensual)
-      - En la columna provincias, al igual que el anterior se añade el valor no "aplica" para referirnos en este caso al primer o segundo caso que hablamos antes(total nacional mensual o total por comunidades agrupadas).
+- Tratamiento de "Total Nacional": En la columna "Total_nacional", el valor "Total Nacional" representa las filas en las que los datos representan el total de turistas nacionales por mes. En todas aquellas que no cumpla con esta condición, se imputa el valor "No aplica". Además, en aquellas filas donde se utiliza el valor "Total Nacional" en la columna "Total_nacional" se imputa "No aplica" en los valores nulos de esas mismas filas en las columnas "Comunidades_ciudades_autonomas" y "Provincias".
+
+Por otro lado, también se imputa "No aplica" en aquellas filas de la columna "Provincias" cuando la fila representa el total de turistas por comunidades y ciudades autónomas por mes.
 
 - Reasignación de Ceuta y Melilla: En el dataset original, Ceuta y Melilla aparecían en ocasiones solo como "Comunidades" sin asignación provincial clara, o con formatos inconsistentes. Se imputaron como "Provincias" dentro de sus respectivas categorías para permitir una comparativa homogénea con el resto de provincias españolas. Ahora computan como unidades territoriales equivalentes al resto de provincias para el modelo.
 
@@ -271,10 +270,10 @@ La predicción se llevó a cabo utilizando un enfoque autoregresivo, debido a la
 El modelo proporciona predicciones mensuales por provincia, que posteriormente se agregan para obtener una estimación del total de turistas del trimestre de verano. Los resultadosse pueden ver aqui:
 ### Predicción final – Verano 2026 (Random Forest)
 
-![Predicción verano 2026 Gráfico - Random Forest](graficos/grafico_random_forest_2026.png)
-
 Tabla completa de resultados:  
-[Descargar tabla en Excel](graficos/tabla_random_forest_2026.xlsx)
+
+
+
 
 Las predicciones obtenidas permiten identificar las provincias con mayor volumen esperado de turistas en el verano de 2026, ofreciendo una herramienta útil para la planificación y toma de decisiones en el ámbito del turismo.
 
